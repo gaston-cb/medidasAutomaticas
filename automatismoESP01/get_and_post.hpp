@@ -27,7 +27,6 @@ void requestGetString(){
   String url = "http://192.168.4.1/estado" ;
   if (http.begin(client, url)) //Iniciar conexión
   {
-    Serial.print("[HTTP] GET...\n");
     int httpCode = http.GET();  // Realizar petición 
     if (httpCode > 0) 
     {
@@ -35,16 +34,15 @@ void requestGetString(){
        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) 
        {
          payload_get = http.getString();   // Obtener respuesta
-         Serial.print(payload_get); 
        }
     }else 
     {
-       Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+      return ; 
     } 
     http.end();
    }else 
    {
-          Serial.printf("[HTTP} Unable to connect\n");
+          return ; 
    }
    // asignar estructura -- 
    txt2str(payload_get) ;  
