@@ -46,9 +46,7 @@ struct config_menu {
 struct datos_cannon{
   uint8_t init_com ; 
   float ozono_cannon ; 
-  float factor_ozono ; 
   float co2 ; 
-  float factor_co2 ; 
   int temperatura ; 
   int humedad ; 
   uint8_t end_com ; 
