@@ -56,7 +56,8 @@ struct datos_cannon{
 /*
  * init_com and end_com is equal 0xAB 
 */
-struct status_cannon{
+struct status_cannon
+{
   uint8_t init_com ; 
   char name_ssid[10] ;
   bool status_ssid ; 
