@@ -13,8 +13,8 @@
 #include "registros.h"  
 #include "horarioUTC.hpp" 
 #include "sendingDataGAS.hpp" 
-#define IARSSID 
-#define PASSWORDWIFI     
+#define IARSSID "iar"
+#define PASSWORDWIFI "iarauditorio"    
 #define PINCONNECTIAR 2  
 #define AMBIENTE1M3 "O3Z103" 
 #define AMBIENTE30M3 "O3Z104" 
@@ -31,8 +31,6 @@ struct status_cannon sendesp01{
   false,
   0xAB 
 } ; 
-
-
 
 extern WiFiClientSecure client ; 
 extern unsigned int localPort ; 
@@ -56,34 +54,47 @@ unsigned long int t1 = 0 ;
 unsigned long int waitHour = 0 ; 
 bool wait = false  ; 
 bool obtainHour = true ; 
-void loop() {
-  if (millis()-t0>=60000){
-     Serial.println("est_red") ; 
-     if (statusNetworkPlace()==false){
-        connectNetwork() ;    
-     }
-     t0 = millis() ;
+void loop() 
+{
+  if (Serial.available()){
+    
+    if (Serial.peek() == 0xAB){
+    }else if (Serial.peek() == 0xCD){
+    
+    }
+    
+  }else{
+      if (millis()-t0>=60000)
+      {
+         Serial.println("est_red"); 
+         if (statusNetworkPlace()==false)
+         {
+            connectNetwork() ;    
+         }
+         t0 = millis() ;
+      }
+      if (millis()-t1>=600000 && obtainHour == true){ 
+        t1 = millis() ; 
+        waitHour = millis() ; 
+        obtainDate();     
+        wait = true ; 
+      }
+      if (millis()-waitHour>=1000 && wait == true){ 
+        wait = false ; 
+        responseNTP() ; 
+      }
+      if (hour_day[0]==17 && hour_day[1]>=8){
+        Serial.println("30m3") ;  
+        obtainHour = false ; 
+      }
+      if (hour_day[0]==18 && hour_day[1]>=20){
+        Serial.println("30m3") ;  
+        obtainHour = false ; 
+      }
   }
-  if (millis()-t1>=600000 && obtainHour == true) // 1 minutos 
-  { 
-    t1 = millis() ; 
-    waitHour = millis() ; 
-    obtainDate();     
-    wait = true ; 
-  }
-  if (millis()-waitHour>=1000 && wait == true)
-  { 
-    Serial.println("respntp") ; 
-    wait = false ; 
-    responseNTP() ; 
-  }
-  if (hour_day[0]==17 && hour_day[1]>=2){
-    Serial.println("start cannon"); 
-    obtainHour = false ; 
-  }
-
-
   
+
+
 } 
 
 void connectNetwork() {
